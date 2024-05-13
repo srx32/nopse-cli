@@ -2,14 +2,16 @@
   "name": "project-setup-cli",
   "version": "1.0.0",
   "description": "",
-  "main": "main/index.ts",
+  "main": "dist/app/index.js",
   "bin": {
-    "no-name": "dist/index.js"
+    "no-name-yet": "dist/app/index.js"
   },
   "scripts": {
-    "start": "ts-node main/index.ts",
+    "start": "ts-node src/app/index.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npx tsc",
+    "transpile-to-js": "npx tsc",
+    "after-transpile": "npx copyfiles --all --up 1 \"src/templates/**/*\" --exclude \"src/templates/**/*-lock.json\" --exclude \"src/templates/**/node_modules/**/*\" dist",
+    "build": "npm run transpile-to-js && npm run after-transpile",
     "serve": "npx .",
     "deploy": "npm run build && npm run serve"
   },
@@ -22,6 +24,7 @@
   },
   "devDependencies": {
     "@types/node": "^20.12.10",
+    "copyfiles": "^2.4.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.4.5"
   }

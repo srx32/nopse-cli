@@ -39,7 +39,7 @@ program
 program
   .command("create")
   .description("Create a NodeJS project")
-  .argument("<projectName>", "Name of the project")
+  .argument("<name>", "Name of the project")
   .option(
     "-l, --lang <language>",
     "Programming language to use",
@@ -59,13 +59,66 @@ program
   //     return starterPackages;
   //   }
   // )
-  .action(async (projectName, options) => {
-    console.log("The project name is: " + projectName);
+  .action(async (name, options) => {
+    console.log("The project name is: " + name);
     console.log(
       "With the following options: " + JSON.stringify(options, null, 2)
     );
+
+    const projectName = String(name);
+    const language = String(options.lang);
+    const isExpressServer = Boolean(options.express);
+    const initGit = Boolean(options.gitInit);
+
+    console.log(projectName, language, isExpressServer, initGit);
+
+    await generateNodeProject(projectName, language, isExpressServer, initGit);
   });
 
+async function generateNodeProject(
+  name: string,
+  language: string,
+  isExpressServer: boolean,
+  initGit: boolean
+) {
+  try {
+    const cwdPath = path.normalize(process.cwd());
+    const folderPath = path.join(cwdPath, name);
+    const tsExpressPath = path.join(__dirname, "..", "templates", "ts_express");
+
+    //   await fs.access(folderPath);
+
+    console.log(folderPath);
+
+    await fs.mkdir(folderPath);
+
+    // await fs.writeFile(path.join(__dirname, name, "text.txt"), "OK");
+
+    // Execute an npm command
+    // npm i express morgan cors dotenv
+    // npm i -D typescript @types/node ts-node nodemon @types/express @types/morgan @types/cors
+
+    await fs.cp(tsExpressPath, folderPath, {
+      recursive: true,
+      filter(source, destination) {
+        console.log("Source: " + source);
+        console.log("Destination: " + destination);
+
+        return true;
+      },
+    });
+    exec("npm i", { cwd: folderPath }, (error, stdout, stderr) => {
+      if (error) {
+        console.error(`error: ${error.message}`);
+        return;
+      }
+      console.log(`stdout: ${stdout}`);
+      console.error(`stderr: ${stderr}`);
+    });
+  } catch (error) {
+    console.error(error);
+  }
+}
 // program
 //   .option("-gi, --git-init", "Initialise git repository")
 //   .option("-p, --package <packages...>", "Starter packages to install");
