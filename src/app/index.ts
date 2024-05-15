@@ -84,29 +84,54 @@ async function generateNodeProject(
   try {
     const cwdPath = path.normalize(process.cwd());
     const folderPath = path.join(cwdPath, name);
-    const tsExpressPath = path.join(__dirname, "..", "templates", "ts_express");
+
+    let templatePath = "";
+
+    if (language === "js") {
+      if (isExpressServer) {
+        templatePath = path.join(__dirname, "..", "templates", "js_express");
+      } else {
+        templatePath = path.join(__dirname, "..", "templates", "js");
+      }
+    }
+    // language === 'ts'
+    else {
+      if (isExpressServer) {
+        templatePath = path.join(__dirname, "..", "templates", "ts_express");
+      } else {
+        templatePath = path.join(__dirname, "..", "templates", "ts");
+      }
+    }
 
     //   await fs.access(folderPath);
 
     console.log(folderPath);
 
+    // Creating project folder
     await fs.mkdir(folderPath);
 
     // await fs.writeFile(path.join(__dirname, name, "text.txt"), "OK");
 
-    // Execute an npm command
-    // npm i express morgan cors dotenv
-    // npm i -D typescript @types/node ts-node nodemon @types/express @types/morgan @types/cors
-
-    await fs.cp(tsExpressPath, folderPath, {
+    // Copying files in project folder
+    await fs.cp(templatePath, folderPath, {
       recursive: true,
       filter(source, destination) {
         console.log("Source: " + source);
         console.log("Destination: " + destination);
 
-        return true;
+        // Prevents "node_modules" folder and "package-lock.json" file from being copied
+        // Might not be necessary after build. But just in case
+        if (
+          source.includes("node_modules") ||
+          source.includes("package-lock.json")
+        ) {
+          return false;
+        } else {
+          return true;
+        }
       },
     });
+
     exec("npm i", { cwd: folderPath }, (error, stdout, stderr) => {
       if (error) {
         console.error(`error: ${error.message}`);
@@ -129,3 +154,7 @@ const options = program.opts();
 console.log(
   "The non command related options are : " + JSON.stringify(options, null, 2)
 );
+
+// Execute an npm command
+// npm i express morgan cors dotenv
+// npm i -D typescript @types/node ts-node nodemon @types/express @types/morgan @types/cors
