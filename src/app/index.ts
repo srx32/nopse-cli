@@ -82,9 +82,13 @@ async function generateNodeProject(
   initGit: boolean
 ) {
   try {
+    // Getting and normalizing the current working directory
     const cwdPath = path.normalize(process.cwd());
+
+    // Setting up the project folder path
     const folderPath = path.join(cwdPath, name);
 
+    // Setting up the template path (folder to be copied) based on language and express option
     let templatePath = "";
 
     if (language === "js") {
@@ -132,6 +136,20 @@ async function generateNodeProject(
       },
     });
 
+    // Updating package.json with the name of the project
+    const packageJsonPath = path.join(folderPath, "package.json");
+    const packageJsonString = await fs.readFile(packageJsonPath, {
+      encoding: "utf8",
+    });
+    console.log(packageJsonString);
+    const packageJsonObject = JSON.parse(packageJsonString);
+    packageJsonObject.name = name;
+    const packageJsonStringUpdated = JSON.stringify(packageJsonObject, null, 2);
+    console.log(packageJsonStringUpdated);
+
+    fs.writeFile(packageJsonPath, packageJsonStringUpdated);
+
+    // Executing "npm install" command to install the packages
     exec("npm i", { cwd: folderPath }, (error, stdout, stderr) => {
       if (error) {
         console.error(`error: ${error.message}`);
@@ -144,6 +162,7 @@ async function generateNodeProject(
     console.error(error);
   }
 }
+
 // program
 //   .option("-gi, --git-init", "Initialise git repository")
 //   .option("-p, --package <packages...>", "Starter packages to install");
