@@ -192,6 +192,18 @@ async function generateNodeProject(
       console.log(`stdout: ${stdout}`);
       console.error(`stderr: ${stderr}`);
     });
+
+    if (initGit) {
+      // Executing "git init" command to initialize a git repo
+      exec("git init", { cwd: folderPath }, (error, stdout, stderr) => {
+        if (error) {
+          console.error(`error: ${error.message}`);
+          return;
+        }
+        console.log(`stdout: ${stdout}`);
+        console.error(`stderr: ${stderr}`);
+      });
+    }
   } catch (error: any) {
     if (
       error.errno &&
