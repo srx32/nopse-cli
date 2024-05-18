@@ -26,11 +26,11 @@ function checkNameFormat(value: string, previous: any) {
   }
 
   console.log(
-    chalk.red(chalk.bold("Error : Incorrect format for projectName!\n"))
+    chalk.red(chalk.bold("\nError : Incorrect format for projectName!"))
   );
 
   console.log(
-    "Please, only 2 main formats",
+    "\nPlease, only 2 main formats",
     chalk.yellow(chalk.bold("(lowercase only)")),
     "are supported for the project name: "
   );
@@ -202,13 +202,15 @@ async function generateNodeProject(
       console.log(
         chalk.red(
           chalk.bold(
-            "Error: The project folder '" + name + "' already exists!\n"
+            "\nError: The project folder '" + name + "' already exists!"
           )
         )
       );
     } else {
       console.error(error);
     }
+
+    process.exit(1);
   }
 }
 
