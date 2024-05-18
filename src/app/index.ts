@@ -12,8 +12,42 @@ const program = new Command();
 // const starterPackages: string[] = [];
 
 console.log(
-  "-----------------------------------\nSTARTING PROGRAM\n-----------------------------------"
+  chalk.cyan(
+    "-----------------------------------\nSTARTING PROGRAM\n-----------------------------------"
+  )
 );
+
+function checkNameFormat(value: string, previous: any) {
+  const packageJsonNameRegexp =
+    /^(?:(?:@(?:[a-z0-9-*~][a-z0-9-*._~]*)?\/[a-z0-9-._~])|[a-z0-9-~])[a-z0-9-._~]*$/g;
+
+  if (packageJsonNameRegexp.test(value)) {
+    return value;
+  }
+
+  console.log(
+    chalk.red(chalk.bold("Error : Incorrect format for projectName!\n"))
+  );
+
+  console.log(
+    "Please, only 2 main formats",
+    chalk.yellow(chalk.bold("(lowercase only)")),
+    "are supported for the project name: "
+  );
+  console.log(
+    `${chalk.yellow(chalk.bold("1/"))}
+    - Starting with "@" followed by an alphanumeric string with optional hyphens, tildes, asterisks, and underscores (zero or more repetitions), 
+    - then a slash ("/"), 
+    - and finally another alphanumeric string with optional hyphens, dots, and tildes (zero or more repetitions)`
+  );
+  console.log(
+    `${chalk.yellow(chalk.bold("2/"))}
+    - Starting with an alphanumeric character with optional hyphens and tildes (zero or more repetitions), 
+    - followed by zero or more repetitions of alphanumeric characters, hyphens, dots, and tildes`
+  );
+
+  process.exit(1);
+}
 
 function isJSorTS(value: string, previous: any) {
   if (value.toLowerCase() !== "js" && value.toLowerCase() !== "ts") {
@@ -39,7 +73,7 @@ program
 program
   .command("create")
   .description("Create a NodeJS project")
-  .argument("<name>", "Name of the project")
+  .argument("<name>", "Name of the project", checkNameFormat)
   .option(
     "-l, --lang <language>",
     "Programming language to use",
@@ -150,7 +184,7 @@ async function generateNodeProject(
     fs.writeFile(packageJsonPath, packageJsonStringUpdated);
 
     // Executing "npm install" command to install the packages
-    exec("npm i", { cwd: folderPath }, (error, stdout, stderr) => {
+    exec("npm install", { cwd: folderPath }, (error, stdout, stderr) => {
       if (error) {
         console.error(`error: ${error.message}`);
         return;
@@ -158,8 +192,23 @@ async function generateNodeProject(
       console.log(`stdout: ${stdout}`);
       console.error(`stderr: ${stderr}`);
     });
-  } catch (error) {
-    console.error(error);
+  } catch (error: any) {
+    if (
+      error.errno &&
+      error.errno === -17 &&
+      error.code &&
+      error.code === "EEXIST"
+    ) {
+      console.log(
+        chalk.red(
+          chalk.bold(
+            "Error: The project folder '" + name + "' already exists!\n"
+          )
+        )
+      );
+    } else {
+      console.error(error);
+    }
   }
 }
 
