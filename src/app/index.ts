@@ -6,6 +6,7 @@ import { Command } from "commander";
 import fs from "node:fs/promises";
 import path from "node:path";
 import { exec } from "node:child_process";
+import { promisify } from "node:util";
 
 const program = new Command();
 
@@ -183,26 +184,21 @@ async function generateNodeProject(
 
     fs.writeFile(packageJsonPath, packageJsonStringUpdated);
 
+    const execPromisifed = promisify(exec);
     // Executing "npm install" command to install the packages
-    exec("npm install", { cwd: folderPath }, (error, stdout, stderr) => {
-      if (error) {
-        console.error(`error: ${error.message}`);
-        return;
-      }
-      console.log(`stdout: ${stdout}`);
-      console.error(`stderr: ${stderr}`);
+    const { stdout, stderr } = await execPromisifed("npm install", {
+      cwd: folderPath,
     });
+    console.log(`stdout: ${stdout}`);
+    console.error(`stderr: ${stderr}`);
 
     if (initGit) {
       // Executing "git init" command to initialize a git repo
-      exec("git init", { cwd: folderPath }, (error, stdout, stderr) => {
-        if (error) {
-          console.error(`error: ${error.message}`);
-          return;
-        }
-        console.log(`stdout: ${stdout}`);
-        console.error(`stderr: ${stderr}`);
+      const { stdout, stderr } = await execPromisifed("git init", {
+        cwd: folderPath,
       });
+      console.log(`stdout: ${stdout}`);
+      console.error(`stderr: ${stderr}`);
     }
   } catch (error: any) {
     if (
