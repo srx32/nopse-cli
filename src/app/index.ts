@@ -95,17 +95,17 @@ program
   //   }
   // )
   .action(async (name, options) => {
-    console.log("The project name is: " + name);
-    console.log(
-      "With the following options: " + JSON.stringify(options, null, 2)
-    );
+    // console.log("Creating project '" + name + "'");
+    // console.log(
+    //   "With the following options: " + JSON.stringify(options, null, 2)
+    // );
 
     const projectName = String(name);
     const language = String(options.lang);
     const isExpressServer = Boolean(options.express);
     const initGit = Boolean(options.gitInit);
 
-    console.log(projectName, language, isExpressServer, initGit);
+    // console.log(projectName, language, isExpressServer, initGit);
 
     await generateNodeProject(projectName, language, isExpressServer, initGit);
   });
@@ -117,6 +117,8 @@ async function generateNodeProject(
   initGit: boolean
 ) {
   try {
+    console.log(chalk.yellow("\nCreating project '" + name + "'..."));
+
     // Getting and normalizing the current working directory
     const cwdPath = path.normalize(process.cwd());
 
@@ -144,19 +146,25 @@ async function generateNodeProject(
 
     //   await fs.access(folderPath);
 
-    console.log(folderPath);
+    // console.log(folderPath);
 
-    // Creating project folder
+    // CREATING PROJECT FOLDER
     await fs.mkdir(folderPath);
 
-    // await fs.writeFile(path.join(__dirname, name, "text.txt"), "OK");
+    console.log(chalk.green(chalk.bold("\nCreated project folder : " + name)));
 
-    // Copying files in project folder
+    // COPYING FILES IN PROJECT FOLDER
+    console.log(chalk.yellow("\nCreating project files..."));
+
     await fs.cp(templatePath, folderPath, {
       recursive: true,
       filter(source, destination) {
-        console.log("Source: " + source);
-        console.log("Destination: " + destination);
+        // console.log("Source: " + source);
+        // console.log("Destination: " + destination);
+
+        // Display should look like :  "CRETAED - projectName/file.js", "CREATED - projectName/subfolder/file.js"
+        const fileRelativePath = name + destination.split(name)[1];
+        console.log(chalk.green("CREATED") + " - " + fileRelativePath);
 
         // Prevents "node_modules" folder and "package-lock.json" file from being copied
         // Might not be necessary after build. But just in case
@@ -171,35 +179,84 @@ async function generateNodeProject(
       },
     });
 
-    // Updating package.json with the name of the project
+    console.log(
+      chalk.green(chalk.bold("All project files successfuly created."))
+    );
+
+    // UPDATING package.json WITH THE NAME OF THE PROJECT
+    console.log(chalk.yellow("\nUpdating 'package.json'..."));
+
     const packageJsonPath = path.join(folderPath, "package.json");
-    const packageJsonString = await fs.readFile(packageJsonPath, {
+    const packageJsonText = await fs.readFile(packageJsonPath, {
       encoding: "utf8",
     });
-    console.log(packageJsonString);
-    const packageJsonObject = JSON.parse(packageJsonString);
+
+    // console.log(packageJsonText);
+    const packageJsonObject = JSON.parse(packageJsonText);
+
     packageJsonObject.name = name;
-    const packageJsonStringUpdated = JSON.stringify(packageJsonObject, null, 2);
-    console.log(packageJsonStringUpdated);
+    const packageJsonTextUpdated = JSON.stringify(packageJsonObject, null, 2);
+    // console.log(packageJsonTextUpdated);
 
-    fs.writeFile(packageJsonPath, packageJsonStringUpdated);
+    fs.writeFile(packageJsonPath, packageJsonTextUpdated);
 
+    console.log(chalk.green(chalk.bold("'package.json' successfully updated")));
+
+    // EXECUTING SOME COMMANDS
+    // Making 'exec' function return a promise
     const execPromisifed = promisify(exec);
+
+    // INSTALLING NPM PACKAGES
+    console.log(chalk.yellow("\nInstalling packages..."));
+
     // Executing "npm install" command to install the packages
     const { stdout, stderr } = await execPromisifed("npm install", {
       cwd: folderPath,
     });
-    console.log(`stdout: ${stdout}`);
-    console.error(`stderr: ${stderr}`);
+    // console.log(`stdout: ${stdout}`);
+    // console.error(`stderr: ${stderr}`);
 
+    if (stderr) {
+      console.error(
+        chalk.red(
+          chalk.bold(
+            `An error occured when installing npm packages : \n${stderr}`
+          )
+        )
+      );
+
+      process.exit(1);
+    }
+
+    console.log(chalk.green(chalk.bold("Packages installed successfully.")));
+
+    // INITIALIZING GIT REPO
     if (initGit) {
+      console.log(chalk.yellow("\nInitializing git repo..."));
+
       // Executing "git init" command to initialize a git repo
       const { stdout, stderr } = await execPromisifed("git init", {
         cwd: folderPath,
       });
-      console.log(`stdout: ${stdout}`);
-      console.error(`stderr: ${stderr}`);
+      // console.log(`stdout: ${stdout}`);
+      // console.error(`stderr: ${stderr}`);
+
+      if (stderr) {
+        console.error(
+          chalk.red(
+            chalk.bold(
+              `An error occured when initialising git repo : \n${stderr}`
+            )
+          )
+        );
+      } else {
+        console.log(chalk.green(chalk.bold("Git repo initialized.")));
+      }
     }
+
+    console.log(
+      chalk.green(chalk.bold("\n✅ Project '" + name + "' successfully created!"))
+    );
   } catch (error: any) {
     if (
       error.errno &&
@@ -228,10 +285,10 @@ async function generateNodeProject(
 
 program.parse();
 
-const options = program.opts();
-console.log(
-  "The non command related options are : " + JSON.stringify(options, null, 2)
-);
+// const options = program.opts();
+// console.log(
+//   "The non command related options are : " + JSON.stringify(options, null, 2)
+// );
 
 // Execute an npm command
 // npm i express morgan cors dotenv
