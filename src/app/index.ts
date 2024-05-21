@@ -202,14 +202,14 @@ async function generateNodeProject(
 
     console.log(chalk.green(chalk.bold("'package.json' successfully updated")));
 
-    // EXECUTING SOME COMMANDS
+    // RUNNING SOME COMMANDS
     // Making 'exec' function return a promise
     const execPromisifed = promisify(exec);
 
     // INSTALLING NPM PACKAGES
     console.log(chalk.yellow("\nInstalling packages..."));
 
-    // Executing "npm install" command to install the packages
+    // Running "npm install" command to install the packages
     const { stdout, stderr } = await execPromisifed("npm install", {
       cwd: folderPath,
     });
@@ -234,7 +234,7 @@ async function generateNodeProject(
     if (initGit) {
       console.log(chalk.yellow("\nInitializing git repo..."));
 
-      // Executing "git init" command to initialize a git repo
+      // Running "git init" command to initialize a git repo
       const { stdout, stderr } = await execPromisifed("git init", {
         cwd: folderPath,
       });
