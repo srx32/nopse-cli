@@ -4,10 +4,10 @@
   "description": "",
   "main": "dist/app/index.js",
   "bin": {
-    "no-name-yet": "dist/app/index.js"
+    "nps": "dist/app/index.js"
   },
   "scripts": {
-    "start": "ts-node src/app/index.ts",
+    "start": "node -r ts-node/register src/app/index.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
     "transpile-to-js": "npx tsc",
     "after-transpile": "npx copyfiles --all --up 1 \"src/templates/**/*\" --exclude \"src/templates/**/*-lock.json\" --exclude \"src/templates/**/node_modules/**/*\" dist",
