@@ -26,7 +26,7 @@ npx @srx32/nps create projectName
 2. Run the following command
 
 ```sh
-   npm install @srx32/nps -g
+npm install @srx32/nps -g
 ```
 
 It will install the package globally.
@@ -78,13 +78,13 @@ It is a package for creating and handling CLI commands, options and more.
 
 ## chalk
 
-It is a package for logging colored messages in the terminal, even with some styling (bold, italic, etc.).
+It is a package for logging colored messages in the terminal, with even some styling (bold, italic, etc.).
 
 # How are the commands and options structured ?
 
 # Some tutorials & references
 
-These are some tutorials and resources that helped me build this app :
+These are some tutorials and resources that helped me build this CLI :
 
 [Tutorial 1 (JS, commander, chalk, etc.)](https://blog.logrocket.com/creating-a-cli-tool-with-node-js/)
 
