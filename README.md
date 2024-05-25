@@ -4,6 +4,8 @@ This is a npx command-line tool (Node CLI) that helps me set up my NodeJS projec
 
 It contains differents templates for different cases (JS, TS, with or without Express).
 
+> **nps** stands for **n**ode **p**roject **s**etup
+
 <!-- I used TS to build it for the strict typing -->
 
 # How to use (basic set up / quick start / quick use)
