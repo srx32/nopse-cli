@@ -8,7 +8,7 @@ function checkNameFormat(value: string, previous: any) {
     return value;
   }
 
-  console.log(chalk.red.bold("\nError : Incorrect format for projectName!"));
+  console.log(chalk.red.bold("\nError : Incorrect format for name!"));
 
   console.log(
     "\nPlease, only 2 main formats",
