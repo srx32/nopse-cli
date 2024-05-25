@@ -52,7 +52,8 @@ function createNodeProject(name, language, isExpressServer, initGit) {
             yield promises_1.default.cp(templatePath, folderPath, {
                 recursive: true,
                 filter(source, destination) {
-                    // Display should look like :  "CRETAED - projectName/file.js", "CREATED - projectName/subfolder/file.js"
+                    // Display should look like :  "CREATED - projectName/file.js", "CREATED - projectName/subfolder/file.js"
+                    console.log('Source : ' + source);
                     const fileRelativePath = name + destination.split(name)[1];
                     console.log(chalk_1.default.green("CREATED") + " - " + fileRelativePath);
                     // Prevents "node_modules" folder and "package-lock.json" file from being copied
