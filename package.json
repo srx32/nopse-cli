@@ -1,6 +1,6 @@
 {
   "name": "@srx32/nps-cli",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A CLI tool that helps set up NodeJS projects",
   "main": "dist/app/index.js",
   "bin": {
