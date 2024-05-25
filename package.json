@@ -1,7 +1,7 @@
 {
-  "name": "project-setup-cli",
+  "name": "@srx32/nps-cli",
   "version": "1.0.0",
-  "description": "",
+  "description": "A CLI tool that helps set up NodeJS projects",
   "main": "dist/app/index.js",
   "bin": {
     "nps": "dist/app/index.js"
@@ -15,9 +15,16 @@
     "serve": "npx .",
     "deploy": "npm run build && npm run serve"
   },
-  "keywords": [],
+  "keywords": [
+    "cli",
+    "project",
+    "setup",
+    "express"
+  ],
   "author": "",
   "license": "ISC",
+  "repository": "https://github.com/srx32/nps-cli",
+  "homepage": "https://github.com/srx32/nps-cli#readme",
   "dependencies": {
     "chalk": "^4.1.2",
     "commander": "^12.0.0",
