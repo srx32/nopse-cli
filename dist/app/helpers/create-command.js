@@ -50,6 +50,8 @@ function createNodeProject(name, language, isExpressServer, initGit) {
             console.log(chalk_1.default.green.bold("\nCreated project folder : " + name));
             // COPYING FILES IN PROJECT FOLDER
             console.log(chalk_1.default.yellow("\nCreating project files..."));
+            const files = yield fs_extra_1.default.readdir(templatePath);
+            console.log("\nFiles are : " + files + "\n");
             yield fs_extra_1.default.copy(templatePath, folderPath, {
                 filter(source, destination) {
                     // Display should look like :  "CREATED - projectName/file.js", "CREATED - projectName/subfolder/file.js"

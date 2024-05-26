@@ -60,6 +60,10 @@ async function createNodeProject(
     // COPYING FILES IN PROJECT FOLDER
     console.log(chalk.yellow("\nCreating project files..."));
 
+    const files = await fs.readdir(templatePath);
+
+    console.log("\nFiles are : " + files + "\n");
+
     await fs.copy(templatePath, folderPath, {
       filter(source, destination) {
         // Display should look like :  "CREATED - projectName/file.js", "CREATED - projectName/subfolder/file.js"
