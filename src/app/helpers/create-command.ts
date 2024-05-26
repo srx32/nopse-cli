@@ -1,6 +1,7 @@
 import chalk from "chalk";
 
-import fs from "node:fs/promises";
+// import fs from "node:fs/promises";
+import fs from "fs-extra";
 import path from "node:path";
 import { exec } from "node:child_process";
 import { promisify } from "node:util";
@@ -59,12 +60,11 @@ async function createNodeProject(
     // COPYING FILES IN PROJECT FOLDER
     console.log(chalk.yellow("\nCreating project files..."));
 
-    await fs.cp(templatePath, folderPath, {
-      recursive: true,
+    await fs.copy(templatePath, folderPath, {
       filter(source, destination) {
         // Display should look like :  "CREATED - projectName/file.js", "CREATED - projectName/subfolder/file.js"
-        console.log('Source : ' + source);
-        
+        console.log("Source : " + source);
+
         const fileRelativePath = name + destination.split(name)[1];
         console.log(chalk.green("CREATED") + " - " + fileRelativePath);
 

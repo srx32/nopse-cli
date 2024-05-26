@@ -13,7 +13,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const chalk_1 = __importDefault(require("chalk"));
-const promises_1 = __importDefault(require("node:fs/promises"));
+// import fs from "node:fs/promises";
+const fs_extra_1 = __importDefault(require("fs-extra"));
 const node_path_1 = __importDefault(require("node:path"));
 const node_child_process_1 = require("node:child_process");
 const node_util_1 = require("node:util");
@@ -45,15 +46,14 @@ function createNodeProject(name, language, isExpressServer, initGit) {
                 }
             }
             // CREATING PROJECT FOLDER
-            yield promises_1.default.mkdir(folderPath);
+            yield fs_extra_1.default.mkdir(folderPath);
             console.log(chalk_1.default.green.bold("\nCreated project folder : " + name));
             // COPYING FILES IN PROJECT FOLDER
             console.log(chalk_1.default.yellow("\nCreating project files..."));
-            yield promises_1.default.cp(templatePath, folderPath, {
-                recursive: true,
+            yield fs_extra_1.default.copy(templatePath, folderPath, {
                 filter(source, destination) {
                     // Display should look like :  "CREATED - projectName/file.js", "CREATED - projectName/subfolder/file.js"
-                    console.log('Source : ' + source);
+                    console.log("Source : " + source);
                     const fileRelativePath = name + destination.split(name)[1];
                     console.log(chalk_1.default.green("CREATED") + " - " + fileRelativePath);
                     // Prevents "node_modules" folder and "package-lock.json" file from being copied
@@ -71,13 +71,13 @@ function createNodeProject(name, language, isExpressServer, initGit) {
             // UPDATING package.json WITH THE NAME OF THE PROJECT
             console.log(chalk_1.default.yellow("\nUpdating 'package.json'..."));
             const packageJsonPath = node_path_1.default.join(folderPath, "package.json");
-            const packageJsonText = yield promises_1.default.readFile(packageJsonPath, {
+            const packageJsonText = yield fs_extra_1.default.readFile(packageJsonPath, {
                 encoding: "utf8",
             });
             const packageJsonObject = JSON.parse(packageJsonText);
             packageJsonObject.name = name;
             const packageJsonTextUpdated = JSON.stringify(packageJsonObject, null, 2);
-            promises_1.default.writeFile(packageJsonPath, packageJsonTextUpdated);
+            fs_extra_1.default.writeFile(packageJsonPath, packageJsonTextUpdated);
             console.log(chalk_1.default.green.bold("'package.json' successfully updated"));
             // RUNNING SOME COMMANDS
             // Making 'exec' function return a promise
