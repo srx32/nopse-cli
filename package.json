@@ -1,10 +1,10 @@
 {
-  "name": "@srx32/nps-cli",
+  "name": "@srx32/nopse",
   "version": "1.0.6",
   "description": "A CLI tool that helps set up NodeJS projects",
   "main": "dist/app/index.js",
   "bin": {
-    "nps": "dist/app/index.js"
+    "nopse": "dist/app/index.js"
   },
   "scripts": {
     "start": "node -r ts-node/register src/app/index.ts",
@@ -19,12 +19,14 @@
     "cli",
     "project",
     "setup",
-    "express"
+    "express",
+    "nopse",
+    "nopse-cli"
   ],
   "author": "",
   "license": "ISC",
-  "repository": "https://github.com/srx32/nps-cli",
-  "homepage": "https://github.com/srx32/nps-cli#readme",
+  "repository": "https://github.com/srx32/nopse-cli",
+  "homepage": "https://github.com/srx32/nopse-cli#readme",
   "dependencies": {
     "chalk": "^4.1.2",
     "commander": "^12.0.0",

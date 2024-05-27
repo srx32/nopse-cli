@@ -4,7 +4,7 @@ This is a npx command-line tool (Node CLI) that helps me set up my NodeJS projec
 
 It contains differents templates for different cases (JS, TS, with or without Express).
 
-> **nps** stands for **n**ode **p**roject **s**etup
+> **nopse** stands for **no**de **p**roject **se**tup
 
 <!-- I used TS to build it for the strict typing -->
 
@@ -19,7 +19,7 @@ You can use npx, install the npm package or clone the repo and try it locally on
 3. Run the following command
 
 ```sh
-npx @srx32/nps create projectName
+npx @srx32/nopse create projectName
 ```
 
 ## Install npm package (or npx)
@@ -28,7 +28,7 @@ npx @srx32/nps create projectName
 2. Run the following command
 
 ```sh
-npm install @srx32/nps -g
+npm install @srx32/nopse -g
 ```
 
 It will install the package globally.
@@ -37,7 +37,7 @@ It will install the package globally.
 4. Run the following command
 
 ```sh
-@srx32/nps create projectName
+nopse create projectName
 ```
 
 ## Try locally
