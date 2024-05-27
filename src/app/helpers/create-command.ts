@@ -1,7 +1,7 @@
 import chalk from "chalk";
 
-// import fs from "node:fs/promises";
-import fs from "fs-extra";
+import fs from "node:fs/promises";
+// import fs from "fs-extra";
 import path from "node:path";
 import { exec } from "node:child_process";
 import { promisify } from "node:util";
@@ -61,22 +61,30 @@ async function createNodeProject(
     // COPYING FILES IN PROJECT FOLDER
     console.log(chalk.yellow("\nCreating project files..."));
 
-    const files = await fs.readdir(templatePath, { recursive: true });
+    // const files = await fs.readdir(templatePath, { recursive: true });
 
-    console.log("\nFiles are : " + files + "\n");
+    // console.log("\nFiles are : " + files + "\n");
 
     const results = await copy(templatePath, folderPath, {
-      overwrite: true,
       dot: true,
       filter: ["**/*", "!**/node_modules/**", "!**/package-lock.json"],
-    });
-    console.info("Copied " + results.length + " files");
-    console.log(JSON.stringify(results, null, 2));
+    }).on(copy.events.COPY_FILE_COMPLETE, (copyOperation) => {
+      const destination = copyOperation.dest;
 
-    // await fs.copy(templatePath, folderPath, {
+      // Display should look like :  "CREATED - projectName/file.js", "CREATED - projectName/subfolder/file.js"
+
+      const fileRelativePath = name + destination.split(name)[1];
+      console.log(chalk.green("CREATED") + " - " + fileRelativePath);
+    });
+
+    // console.info("Copied " + results.length + " files");
+    // console.log(JSON.stringify(results, null, 2));
+
+    // await fs.cp(templatePath, folderPath, {
+    //   recursive: true,
     //   filter(source, destination) {
     //     // Display should look like :  "CREATED - projectName/file.js", "CREATED - projectName/subfolder/file.js"
-    //     console.log("Source : " + source);
+    //     // console.log("Source : " + source);
 
     //     const fileRelativePath = name + destination.split(name)[1];
     //     console.log(chalk.green("CREATED") + " - " + fileRelativePath);
@@ -121,19 +129,19 @@ async function createNodeProject(
     console.log(chalk.yellow("\nInstalling packages..."));
 
     // Running "npm install" command to install the packages
-    // const { stdout, stderr } = await execPromisifed("npm install", {
-    //   cwd: folderPath,
-    // });
+    const { stdout, stderr } = await execPromisifed("npm install", {
+      cwd: folderPath,
+    });
 
-    // if (stderr) {
-    //   console.error(
-    //     chalk.red.bold(
-    //       `An error occured when installing npm packages : \n${stderr}`
-    //     )
-    //   );
+    if (stderr) {
+      console.error(
+        chalk.red.bold(
+          `An error occured when installing npm packages : \n${stderr}`
+        )
+      );
 
-    //   process.exit(1);
-    // }
+      process.exit(1);
+    }
 
     console.log(chalk.green.bold("Packages installed successfully."));
 

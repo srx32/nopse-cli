@@ -13,8 +13,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const chalk_1 = __importDefault(require("chalk"));
-// import fs from "node:fs/promises";
-const fs_extra_1 = __importDefault(require("fs-extra"));
+const promises_1 = __importDefault(require("node:fs/promises"));
+// import fs from "fs-extra";
 const node_path_1 = __importDefault(require("node:path"));
 const node_child_process_1 = require("node:child_process");
 const node_util_1 = require("node:util");
@@ -47,23 +47,28 @@ function createNodeProject(name, language, isExpressServer, initGit) {
                 }
             }
             // CREATING PROJECT FOLDER
-            yield fs_extra_1.default.mkdir(folderPath);
+            yield promises_1.default.mkdir(folderPath);
             console.log(chalk_1.default.green.bold("\nCreated project folder : " + name));
             // COPYING FILES IN PROJECT FOLDER
             console.log(chalk_1.default.yellow("\nCreating project files..."));
-            const files = yield fs_extra_1.default.readdir(templatePath, { recursive: true });
-            console.log("\nFiles are : " + files + "\n");
+            // const files = await fs.readdir(templatePath, { recursive: true });
+            // console.log("\nFiles are : " + files + "\n");
             const results = yield (0, recursive_copy_1.default)(templatePath, folderPath, {
-                overwrite: true,
                 dot: true,
                 filter: ["**/*", "!**/node_modules/**", "!**/package-lock.json"],
+            }).on(recursive_copy_1.default.events.COPY_FILE_COMPLETE, (copyOperation) => {
+                const destination = copyOperation.dest;
+                // Display should look like :  "CREATED - projectName/file.js", "CREATED - projectName/subfolder/file.js"
+                const fileRelativePath = name + destination.split(name)[1];
+                console.log(chalk_1.default.green("CREATED") + " - " + fileRelativePath);
             });
-            console.info("Copied " + results.length + " files");
-            console.log(JSON.stringify(results, null, 2));
-            // await fs.copy(templatePath, folderPath, {
+            // console.info("Copied " + results.length + " files");
+            // console.log(JSON.stringify(results, null, 2));
+            // await fs.cp(templatePath, folderPath, {
+            //   recursive: true,
             //   filter(source, destination) {
             //     // Display should look like :  "CREATED - projectName/file.js", "CREATED - projectName/subfolder/file.js"
-            //     console.log("Source : " + source);
+            //     // console.log("Source : " + source);
             //     const fileRelativePath = name + destination.split(name)[1];
             //     console.log(chalk.green("CREATED") + " - " + fileRelativePath);
             //     // Prevents "node_modules" folder and "package-lock.json" file from being copied
@@ -82,13 +87,13 @@ function createNodeProject(name, language, isExpressServer, initGit) {
             // UPDATING package.json WITH THE NAME OF THE PROJECT
             console.log(chalk_1.default.yellow("\nUpdating 'package.json'..."));
             const packageJsonPath = node_path_1.default.join(folderPath, "package.json");
-            const packageJsonText = yield fs_extra_1.default.readFile(packageJsonPath, {
+            const packageJsonText = yield promises_1.default.readFile(packageJsonPath, {
                 encoding: "utf8",
             });
             const packageJsonObject = JSON.parse(packageJsonText);
             packageJsonObject.name = name;
             const packageJsonTextUpdated = JSON.stringify(packageJsonObject, null, 2);
-            fs_extra_1.default.writeFile(packageJsonPath, packageJsonTextUpdated);
+            promises_1.default.writeFile(packageJsonPath, packageJsonTextUpdated);
             console.log(chalk_1.default.green.bold("'package.json' successfully updated"));
             // RUNNING SOME COMMANDS
             // Making 'exec' function return a promise
@@ -96,17 +101,13 @@ function createNodeProject(name, language, isExpressServer, initGit) {
             // INSTALLING NPM PACKAGES
             console.log(chalk_1.default.yellow("\nInstalling packages..."));
             // Running "npm install" command to install the packages
-            // const { stdout, stderr } = await execPromisifed("npm install", {
-            //   cwd: folderPath,
-            // });
-            // if (stderr) {
-            //   console.error(
-            //     chalk.red.bold(
-            //       `An error occured when installing npm packages : \n${stderr}`
-            //     )
-            //   );
-            //   process.exit(1);
-            // }
+            const { stdout, stderr } = yield execPromisifed("npm install", {
+                cwd: folderPath,
+            });
+            if (stderr) {
+                console.error(chalk_1.default.red.bold(`An error occured when installing npm packages : \n${stderr}`));
+                process.exit(1);
+            }
             console.log(chalk_1.default.green.bold("Packages installed successfully."));
             // INITIALIZING GIT REPO
             if (initGit) {
