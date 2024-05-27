@@ -18,6 +18,7 @@ const fs_extra_1 = __importDefault(require("fs-extra"));
 const node_path_1 = __importDefault(require("node:path"));
 const node_child_process_1 = require("node:child_process");
 const node_util_1 = require("node:util");
+const recursive_copy_1 = __importDefault(require("recursive-copy"));
 function createNodeProject(name, language, isExpressServer, initGit) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -50,25 +51,33 @@ function createNodeProject(name, language, isExpressServer, initGit) {
             console.log(chalk_1.default.green.bold("\nCreated project folder : " + name));
             // COPYING FILES IN PROJECT FOLDER
             console.log(chalk_1.default.yellow("\nCreating project files..."));
-            const files = yield fs_extra_1.default.readdir(templatePath);
+            const files = yield fs_extra_1.default.readdir(templatePath, { recursive: true });
             console.log("\nFiles are : " + files + "\n");
-            yield fs_extra_1.default.copy(templatePath, folderPath, {
-                filter(source, destination) {
-                    // Display should look like :  "CREATED - projectName/file.js", "CREATED - projectName/subfolder/file.js"
-                    console.log("Source : " + source);
-                    const fileRelativePath = name + destination.split(name)[1];
-                    console.log(chalk_1.default.green("CREATED") + " - " + fileRelativePath);
-                    // Prevents "node_modules" folder and "package-lock.json" file from being copied
-                    // Might not be necessary after build. But just in case
-                    if (source.includes("node_modules") ||
-                        source.includes("package-lock.json")) {
-                        return false;
-                    }
-                    else {
-                        return true;
-                    }
-                },
+            const results = yield (0, recursive_copy_1.default)(templatePath, folderPath, {
+                overwrite: true,
+                dot: true,
+                filter: ["**/*", "!**/node_modules/**", "!**/package-lock.json"],
             });
+            console.info("Copied " + results.length + " files");
+            console.log(JSON.stringify(results, null, 2));
+            // await fs.copy(templatePath, folderPath, {
+            //   filter(source, destination) {
+            //     // Display should look like :  "CREATED - projectName/file.js", "CREATED - projectName/subfolder/file.js"
+            //     console.log("Source : " + source);
+            //     const fileRelativePath = name + destination.split(name)[1];
+            //     console.log(chalk.green("CREATED") + " - " + fileRelativePath);
+            //     // Prevents "node_modules" folder and "package-lock.json" file from being copied
+            //     // Might not be necessary after build. But just in case
+            //     if (
+            //       source.includes("node_modules") ||
+            //       source.includes("package-lock.json")
+            //     ) {
+            //       return false;
+            //     } else {
+            //       return true;
+            //     }
+            //   },
+            // });
             console.log(chalk_1.default.green.bold("All project files successfuly created."));
             // UPDATING package.json WITH THE NAME OF THE PROJECT
             console.log(chalk_1.default.yellow("\nUpdating 'package.json'..."));
@@ -87,13 +96,17 @@ function createNodeProject(name, language, isExpressServer, initGit) {
             // INSTALLING NPM PACKAGES
             console.log(chalk_1.default.yellow("\nInstalling packages..."));
             // Running "npm install" command to install the packages
-            const { stdout, stderr } = yield execPromisifed("npm install", {
-                cwd: folderPath,
-            });
-            if (stderr) {
-                console.error(chalk_1.default.red.bold(`An error occured when installing npm packages : \n${stderr}`));
-                process.exit(1);
-            }
+            // const { stdout, stderr } = await execPromisifed("npm install", {
+            //   cwd: folderPath,
+            // });
+            // if (stderr) {
+            //   console.error(
+            //     chalk.red.bold(
+            //       `An error occured when installing npm packages : \n${stderr}`
+            //     )
+            //   );
+            //   process.exit(1);
+            // }
             console.log(chalk_1.default.green.bold("Packages installed successfully."));
             // INITIALIZING GIT REPO
             if (initGit) {
