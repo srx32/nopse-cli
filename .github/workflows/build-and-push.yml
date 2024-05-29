@@ -20,6 +20,6 @@ jobs:
 
       - name: Run build command
         run: |
-          npm ci
+          npm install typescript -g
           npm run build
           ls
