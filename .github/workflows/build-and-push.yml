@@ -20,5 +20,6 @@ jobs:
 
       - name: Run build command
         run: |
+          npm ci
           npm run build
           ls
