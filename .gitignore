@@ -26,3 +26,5 @@ yarn-error.log*
 /.env
 
 src/templates/**/package-lock.json
+
+build-and-push.fail.yml
