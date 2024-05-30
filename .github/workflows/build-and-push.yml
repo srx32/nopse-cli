@@ -23,8 +23,8 @@ jobs:
           npm ci
           npm run ci-cd-build
           ls
-          git config --global user.email ${{EMAIL}}
-          git config --global user.name ${{USERNAME}}
+          git config --global user.email ${{env.EMAIL}}
+          git config --global user.name ${{env.USERNAME}}
           git branch
           git status
           git checkout -b release
