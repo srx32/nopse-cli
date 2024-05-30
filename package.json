@@ -10,8 +10,9 @@
     "start": "node -r ts-node/register src/app/index.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
     "transpile-to-js": "npx tsc",
-    "after-transpile": "npx copyfiles --all --up 1 \"src/templates/**/*\" --exclude \"src/templates/**/*-lock.json\" --exclude \"src/templates/**/node_modules/**/*\" dist",
-    "build": "npm run transpile-to-js && npm run after-transpile",
+    "copy-templates": "npx copyfiles --all --up 1 \"src/templates/**/*\" --exclude \"src/templates/**/*-lock.json\" --exclude \"src/templates/**/node_modules/**/*\" dist",
+    "copy-package-json": "ts-node src/build/build.ts",
+    "build": "npm run transpile-to-js && npm run copy-templates && npm run copy-package-json",
     "serve": "npx .",
     "deploy": "npm run build && npm run serve"
   },
