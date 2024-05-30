@@ -1,26 +1,54 @@
-name: "publish package to npm"
+name: "build project and publish to npm"
 
 on:
   push:
     branches:
-      - "release"
+      - "main"
 
 jobs:
-  publish:
+  build:
     runs-on: ubuntu-latest
+
     steps:
       - name: checkout
         uses: actions/checkout@v4
         with:
-          ref: release
+          token: ${{secrets.NOPSE_REPO_TOKEN}}
 
-      - name: node
+      - name: Setup node environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Run build command
+        run: |
+          npm ci
+          npm run build
+
+      - name: upload dist folder
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist_folder
+          path: dist
+
+  publish:
+    needs: build
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Setup node environment
         uses: actions/setup-node@v4
         with:
           node-version: 20
           registry-url: https://registry.npmjs.org
 
-      - name: publish
+      - name: download dist folder
+        uses: actions/download-artifact@v4
+        with:
+          name: dist_folder
+
+      - name: publishing to npm
         run: |
           cd dist
           npm publish --access public
