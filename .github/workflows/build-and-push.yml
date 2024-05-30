@@ -24,3 +24,6 @@ jobs:
           npm run build
           ls
           git branch
+          git chackout -b release
+          git branch
+          git status
