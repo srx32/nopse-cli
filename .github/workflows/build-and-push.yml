@@ -24,6 +24,10 @@ jobs:
           npm run build
           ls
           git branch
+          git status
           git checkout -b release
           git branch
           git status
+          git add .
+          git commit -m "Test release"
+          git push
