@@ -22,7 +22,7 @@ jobs:
 
       - name: publish
         run: |
-          cd release
+          cd dist
           npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_AUTH_TOKEN}}
