@@ -22,14 +22,28 @@ jobs:
         run: |
           npm ci
           npm run ci-cd-build
-          ls
-          git config --global user.email ${{vars.EMAIL}}
-          git config --global user.name ${{vars.USERNAME}}
-          git branch
-          git status
-          git checkout -b release
-          git branch
-          git status
-          git add .
-          git commit -m "Test release"
-          git push
+
+  commit-push:
+     needs: build
+     
+     runs-on: ubuntu-latest
+
+     steps:
+       - name: login to git
+         run: |
+          git config user.email ${{vars.EMAIL}}
+          git config user.name ${{vars.USERNAME}}
+
+       - name: commit
+         run: |
+            git branch
+            git status
+            git checkout -b release
+            git branch
+            git status
+            git add .
+            git commit -m "Test release"
+
+       - name: push
+         run: |
+            git push origin release
