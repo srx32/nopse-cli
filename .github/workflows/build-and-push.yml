@@ -12,8 +12,6 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v4
-        with:
-          token: ${{secrets.NOPSE_REPO_TOKEN}}
 
       - name: Setup node environment
         uses: actions/setup-node@v4
@@ -25,6 +23,7 @@ jobs:
           npm ci
           npm run ci-cd-build
           ls
+          git remote set-url origin https://${{secrets.NOPSE_REPO_TOKEN}}/srx32/nopse-cli.git/
           git branch
           git status
           git checkout -b release
