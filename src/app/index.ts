@@ -16,9 +16,9 @@ console.log(
 );
 
 program
-  .name("nps")
+  .name("nopse")
   .description("CLI to set up a NodeJS project")
-  .version("1.0.0");
+  .version("1.0.9");
 
 // CREATE COMMAND HANDLER
 program

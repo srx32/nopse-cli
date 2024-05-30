@@ -117,9 +117,9 @@ async function createNodeProject(
     packageJsonObject.name = name;
     const packageJsonTextUpdated = JSON.stringify(packageJsonObject, null, 2);
 
-    fs.writeFile(packageJsonPath, packageJsonTextUpdated);
+    await fs.writeFile(packageJsonPath, packageJsonTextUpdated);
 
-    console.log(chalk.green.bold("'package.json' successfully updated"));
+    console.log(chalk.green.bold("'package.json' successfully updated."));
 
     // RUNNING SOME COMMANDS
     // Making 'exec' function return a promise

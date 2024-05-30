@@ -44,7 +44,7 @@ async function promptUser() {
     onCancel: () => process.exit(0),
   });
 
-  console.log(response);
+  // console.log(response);
 
   return response;
 }
