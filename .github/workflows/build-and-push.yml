@@ -21,7 +21,7 @@ jobs:
       - name: Run build command
         run: |
           npm ci
-          npm run build
+          npm run ci-cd-build
           ls
           git branch
           git status
