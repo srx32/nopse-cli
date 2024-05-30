@@ -29,6 +29,9 @@ jobs:
      runs-on: ubuntu-latest
 
      steps:
+       - name: checkout
+         uses: actions/checkout@v4
+        
        - name: login to git
          run: |
           git config user.email ${{vars.EMAIL}}
