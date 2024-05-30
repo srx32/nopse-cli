@@ -1,6 +1,6 @@
 {
   "name": "@srx32/nopse",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "description": "A CLI tool that helps set up NodeJS projects",
   "main": "dist/app/index.js",
   "bin": {
