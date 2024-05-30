@@ -11,8 +11,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "transpile-to-js": "npx tsc",
     "copy-templates": "npx copyfiles --all --up 1 \"src/templates/**/*\" --exclude \"src/templates/**/*-lock.json\" --exclude \"src/templates/**/node_modules/**/*\" dist",
+    "copy-readme": "npx copyfiles \"README.md\" dist",
     "copy-package-json": "ts-node src/build/build.ts",
-    "build": "npm run transpile-to-js && npm run copy-templates && npm run copy-package-json",
+    "build": "npm run transpile-to-js && npm run copy-templates && npm run copy-readme && npm run copy-package-json",
     "serve": "npx .",
     "deploy": "npm run build && npm run serve"
   },
