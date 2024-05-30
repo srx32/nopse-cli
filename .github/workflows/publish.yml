@@ -50,6 +50,7 @@ jobs:
 
       - name: publishing to npm
         run: |
+          ls
           cd dist
           npm publish --access public
         env:
